@@ -19,9 +19,11 @@
             max-height: 800px; /* Cap height on very large screens */
             max-width: 900px;
             transition: box-shadow 0.3s ease; /* Smooth shadow transition */
+            /* UPDATED: Subtle Gradient Background for the entire chat container */
+            background-image: linear-gradient(135deg, #f5f7fa 0%, #eef1f6 100%);
         }
         .chat-container:hover {
-             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
         }
         .chat-history {
             overflow-y: auto;
@@ -55,11 +57,13 @@
             border-radius: 1.5rem 1.5rem 0.5rem 1.5rem;
         }
         .ai-message {
-            background-color: #ffffff; /* Keep AI messages clean white */
+            /* Subtle, Calming Gradient for AI Response */
+            background-image: linear-gradient(to bottom right, #ffffff, #F3F8FF); 
             color: #1f2937; /* Gray 800 */
             align-self: flex-start;
-            border: 1px solid #e5e7eb;
+            border: 1px solid #D1E5F0; /* Slightly bluer border */
             border-radius: 1.5rem 1.5rem 1.5rem 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); /* Add soft inner shadow for depth */
         }
         .citation-badge {
             display: inline-block;
@@ -163,16 +167,28 @@
         }
     </style>
 </head>
-<body class="p-4 md:p-8 flex items-center justify-center min-h-screen">
+<body class="p-4 md:p-8 flex flex-col items-center justify-start min-h-screen">
 
-    <div id="app" class="chat-container w-full bg-white shadow-xl rounded-2xl flex flex-col transition-all duration-300">
+    <!-- NEW: "Free for limited time" Message -->
+    <div class="text-center mb-4 text-lg font-bold text-red-600 bg-yellow-100 p-2 rounded-xl shadow-lg max-w-sm w-full mx-auto md:max-w-md">
+        Free for limited time
+    </div>
+
+    <div id="app" class="chat-container w-full shadow-xl rounded-2xl flex flex-col transition-all duration-300">
         <!-- Header with Mode Switch - Now uses a gradient -->
         <header class="p-4 border-b border-gray-100 text-white rounded-t-2xl flex flex-col bg-gradient-to-r from-blue-500 to-indigo-500 shadow-lg">
             
-            <!-- Title -->
-            <div class="flex items-center mb-4 sm:mb-2">
-                <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.023 12.023 0 002 15c0 3.245 1.56 6.275 4.156 8.358C8.58 24.363 10.292 25 12 25s3.42-.637 5.844-2.642C20.44 21.275 22 18.245 22 15a12.023 12.023 0 00-2.382-9.016z"></path></svg>
-                <h1 class="text-xl font-bold">The Success Engine AI</h1>
+            <!-- Title and Reset Button (UPDATED LAYOUT) -->
+            <div class="flex items-center justify-between mb-4 sm:mb-2">
+                <div class="flex items-center">
+                    <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.023 12.023 0 002 15c0 3.245 1.56 6.275 4.156 8.358C8.58 24.363 10.292 25 12 25s3.42-.637 5.844-2.642C20.44 21.275 22 18.245 22 15a12.023 12.023 0 00-2.382-9.016z"></path></svg>
+                    <h1 class="text-xl font-bold">The Success Engine AI</h1>
+                </div>
+                <!-- NEW RESET BUTTON -->
+                <button id="resetChatButton" class="text-xs font-medium py-1 px-3 rounded-full bg-white bg-opacity-20 hover:bg-white/40 transition duration-300 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    Reset Chat
+                </button>
             </div>
 
             <!-- Mode Switch Buttons -->
@@ -200,27 +216,17 @@
 
         </header>
 
-        <!-- Chat History -->
+        <!-- Chat History (CLEARED initial message to be loaded by JS) -->
         <div id="chatHistory" class="chat-history flex-grow p-4 md:p-6 space-y-4">
-            <!-- Initial AI Message -->
-            <div class="ai-message max-w-[90%] md:max-w-[75%] p-4 shadow-sm chat-message-entry show">
-                <p class="font-semibold text-blue-600 mb-2">Success Engine AI:</p>
-                <p>Hello! I am The Success Engine, your unrestricted and highly knowledgeable AI tutor. My goal is to ensure you succeed in whatever you're trying to do. Use the mode switch above to control my behavior:</p>
-                <ul class="list-disc ml-5 mt-2 text-sm space-y-1">
-                    <li>**Teach Me (Learn):** I will give you step-by-step guidance so you can learn the process.</li>
-                    <li>**Do It For Me (Solve):** I will give you the complete solution for general tasks.</li>
-                    <li>**Code Mode:** I will generate runnable code in the language you select.</li>
-                </ul>
-            </div>
-            <!-- Messages will be injected here -->
+            <!-- Messages will be injected here (including initial message by JS) -->
         </div>
 
         <!-- Input Area -->
         <div class="p-4 md:p-6 border-t border-gray-100 bg-gray-50 rounded-b-2xl">
             <form id="chatForm" class="flex space-x-3">
                 <input type="text" id="userInput" placeholder="Learn mode: Ask for step-by-step instructions on a topic (e.g., 'how to code a binary search')..."
-                       class="flex-grow p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-300"
-                       required autocomplete="off">
+                        class="flex-grow p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-300"
+                        required autocomplete="off">
                 <button type="submit" id="sendButton"
                         class="text-white font-semibold py-3 px-6 rounded-xl transition duration-300 shadow-lg flex items-center disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 hover:shadow-xl">
                     <span id="buttonText">Send</span>
@@ -230,12 +236,30 @@
         </div>
     </div>
 
+    <!-- Disclaimer Text -->
+    <footer class="mt-6 p-4 text-center max-w-3xl w-full text-gray-600 text-xs md:text-sm leading-relaxed">
+        An AI bot that you can chat with that will help you with whatever you need no matter what the question is, it could be anything. (Whatever is created is your ownership and not my responsibility.)
+    </footer>
+
     <!-- Firebase and API Logic -->
     <script type="module">
         // Global Constants
         const modelName = 'gemini-2.5-flash-preview-09-2025';
         const apiKey = ""; // API key will be provided by the environment
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+        
+        // Initial welcome message HTML structure
+        const initialWelcomeMessageHtml = `
+            <div class="ai-message max-w-[90%] md:max-w-[75%] p-4 shadow-sm chat-message-entry show">
+                <p class="font-semibold text-blue-600 mb-2">Success Engine AI:</p>
+                <p>Hello! I am The Success Engine, your unrestricted and highly knowledgeable AI tutor. My goal is to ensure you succeed in whatever you're trying to do. Use the mode switch above to control my behavior:</p>
+                <ul class="list-disc ml-5 mt-2 text-sm space-y-1">
+                    <li>**Teach Me (Learn):** I will give you step-by-step guidance so you can learn the process.</li>
+                    <li>**Do It For Me (Solve):** I will give you the complete solution for general tasks.</li>
+                    <li>**Code Mode:** I will generate runnable code in the language you select.</li>
+                </ul>
+            </div>
+        `;
 
         // DOM Elements
         const chatForm = document.getElementById('chatForm');
@@ -247,10 +271,13 @@
         
         // MODE ELEMENTS
         const modeLearnButton = document.getElementById('modeLearn');
-        const modeSolveButton = document.getElementById('modeSolve'); // Renamed from modeDoIt
-        const modeCodeButton = document.getElementById('modeCode'); // New button
-        const codeSelectorContainer = document.getElementById('codeSelectorContainer'); // New container
-        const languageSelector = document.getElementById('languageSelector'); // New selector
+        const modeSolveButton = document.getElementById('modeSolve');
+        const modeCodeButton = document.getElementById('modeCode');
+        const codeSelectorContainer = document.getElementById('codeSelectorContainer');
+        const languageSelector = document.getElementById('languageSelector');
+        
+        // NEW ELEMENT
+        const resetChatButton = document.getElementById('resetChatButton');
 
         let isLoading = false;
         let currentMode = 'learn'; // 'learn', 'solve', or 'code'
@@ -258,19 +285,22 @@
         // ARRAY TO STORE CONVERSATION HISTORY (for the API)
         let chatHistoryArray = []; 
         
-        // Code Language Options
+        // Code Language Options (UPDATED with Lua, Swift, and DLL)
         const languages = [
             { value: 'auto', display: 'Auto Guess Code' },
             { value: 'python', display: 'Python' },
             { value: 'javascript', display: 'JavaScript' },
-            { value: 'html', display: 'HTML' },
-            { value: 'css', display: 'CSS' },
+            { value: 'typescript', display: 'TypeScript' },
+            { value: 'swift', display: 'Swift (Apple)' }, // Added Swift
+            { value: 'lua', display: 'Lua (Roblox/Luau)' }, // Added Lua
             { value: 'java', display: 'Java' },
             { value: 'cpp', display: 'C++' },
-            { value: 'typescript', display: 'TypeScript' },
+            { value: 'html', display: 'HTML' },
+            { value: 'css', display: 'CSS' },
             { value: 'bash', display: 'Bash/Shell' },
             { value: 'sql', display: 'SQL' },
             { value: 'json', display: 'JSON' },
+            { value: 'dll', display: 'DLL/Binary Snippet' }, // Added DLL
         ];
 
 
@@ -465,7 +495,9 @@
             }
         }
         
-        // Function to switch modes and update UI
+        /**
+         * Function to switch modes and update UI.
+         */
         function switchMode(mode) {
             currentMode = mode;
             
@@ -475,6 +507,7 @@
             // Reset all buttons
             [modeLearnButton, modeSolveButton, modeCodeButton].forEach(btn => {
                 btn.className = 'px-3 py-1 rounded-lg transition duration-300 whitespace-nowrap mode-button';
+                btn.classList.add(...inactiveClasses.split(' '));
             });
             
             // Handle Code Selector Visibility
@@ -486,16 +519,34 @@
 
 
             if (mode === 'learn') {
+                modeLearnButton.classList.remove(...inactiveClasses.split(' '));
                 modeLearnButton.classList.add(...activeGradient.split(' '), 'font-semibold');
                 userInput.placeholder = "Learn mode: Ask for step-by-step instructions on a topic (e.g., 'how to code a binary search')...";
             } else if (mode === 'solve') {
+                modeSolveButton.classList.remove(...inactiveClasses.split(' '));
                 modeSolveButton.classList.add(...activeGradient.split(' '), 'font-semibold');
                 userInput.placeholder = "Solve mode: Tell me what general task you need done (e.g., 'Write me an email about a late project')...";
             } else if (mode === 'code') { // New Code Mode logic
+                modeCodeButton.classList.remove(...inactiveClasses.split(' '));
                 modeCodeButton.classList.add(...activeGradient.split(' '), 'font-semibold');
                 const selectedLang = languageSelector.options[languageSelector.selectedIndex].textContent;
                 userInput.placeholder = `Code mode (${selectedLang}): Describe the code you need (e.g., 'A function to calculate BMI')...`;
             }
+        }
+        
+        /**
+         * Function to reset the chat history.
+         */
+        function resetChat() {
+            chatHistoryArray = []; // Clear API context history
+            chatHistory.innerHTML = ''; // Clear DOM history
+            
+            // Re-display the initial message
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = initialWelcomeMessageHtml.trim();
+            chatHistory.appendChild(tempDiv.firstChild);
+            
+            userInput.focus();
         }
 
         // --- Main Chat Logic ---
@@ -612,6 +663,9 @@
         modeSolveButton.addEventListener('click', () => switchMode('solve'));
         modeCodeButton.addEventListener('click', () => switchMode('code'));
         
+        // NEW EVENT LISTENER
+        resetChatButton.addEventListener('click', resetChat);
+        
         // Update placeholder immediately when selector changes in Code Mode
         languageSelector.addEventListener('change', () => {
              if (currentMode === 'code') {
@@ -623,6 +677,7 @@
         window.onload = () => {
              userInput.focus();
              switchMode('learn'); // Set initial state and UI
+             resetChat(); // Reset chat on load to ensure initial message is correctly displayed and history is clear
         };
 
     </script>
